@@ -3,13 +3,14 @@
 #include <iostream>
 using namespace std;
 
-int amountOfPillars = 3;
-int amountOfDisks = 0;
+const int amountOfPillars = 3 ;
+const int amountOfDisks = 3;
+int tower [amountOfPillars][amountOfDisks];
+
 void moveDiskSimple(int n, char A, char B)
 {
     cout << "Move disk " << n << " from " << A << " to " << B << endl;
 }
-
 void setzeScheibeSimple(int n, char A, char B, char C) // A = F, B = T, W = C
 {
     //cout << "To do: Move disk" << n << " von " << A << " nach " << C << endl;
@@ -23,38 +24,58 @@ void setzeScheibeSimple(int n, char A, char B, char C) // A = F, B = T, W = C
     
 }
 
-void setzeScheibeMultidimensionalWay(int n, int from, int to, int help)
-{
-    int amountOfPillars = 3;
-    int amountOfDisks = n;
-    int tower[amountOfPillars][amountOfDisks];
-    //make array 0
-    for(int i = 0; i < amountOfDisks; i++)
+void allZero(){
+    for (int i = 0; i < amountOfDisks; i++)
     {
-        for(int j = 0; j < amountOfPillars; j++)
-        {
-            tower[i][j] = 0;
+        for(int j = 0; j < amountOfPillars; j++){
+            tower[j][i] = 0;
         }
-    }
-    
-    //set disks on first pillar
-    for(int i = 0; i < amountOfDisks; i++)
-    {
-        tower[i][from] = i+1;
-    }
-
-    //print tower
-    for(int i = 0; i < amountOfDisks; i++)
-    {
-        for(int j = 0; j < amountOfPillars; j++)
-        {
-            cout << tower[i][j] << " " ;
-        }
-        cout << endl;
     }
 }
 
+void initialize(){
+    cout << endl;
+    for (int i = 0; i < amountOfDisks; i++)
+    {
+        for(int j = 0; j < amountOfPillars; j++){
+            std::cout << tower[j][i];
+        }
+        std::cout << std::endl;
+    }
 
+}
+void moveDiskSimpleMultidim(int n, int from, int to)
+{
+    int remember = 0;
+    for(int i = 0; i < amountOfDisks; i++){
+        if(tower[from][i] != 0){
+            remember = tower[from][i];
+            tower[from][i] = 0;
+            break;
+        }
+    }
+    remember = 0;
+}
+
+void setzeTurm(int n, int from, int to, int with){
+    allZero();
+    for (int i = 0; i < amountOfDisks; i++)
+    {
+        tower[from][i] = i+1;
+    }
+    initialize();
+    if (n==1){
+        moveDiskSimpleMultidim(n, from, to);
+        return;
+    }
+    setzeTurm(n-1, from, with, to);
+    moveDiskSimpleMultidim(n, from, to);
+    setzeTurm(n-1, with, to, from);
+    initialize();
+    //setzeTurm(n-1, from, with, to);
+    //moveDiskSimpleMultidim(n, from, to);
+    //setzeTurm(n-1, with, to, from);
+}
 int main(int argc, char const *argv[])
 {
     /**
@@ -68,11 +89,12 @@ int main(int argc, char const *argv[])
      * setze Turm(n-1, C, B, A)
      * 
      */
-    cout << "Enter the amount of disks: ";
-    cin >> amountOfDisks;
+    cout << "Enter the amount of disks: " << endl;
+    //cin >> amountOfDisks;
 
     //setzeScheibeSimple(amountOfDisks, 'A', 'B', 'C');
-    setzeScheibeMultidimensionalWay(amountOfDisks, 0, 1, 2);
+
+    setzeTurm(3, 0, 1, 2);
 
 
     return 0;
